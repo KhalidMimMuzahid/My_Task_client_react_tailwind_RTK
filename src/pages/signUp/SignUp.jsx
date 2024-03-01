@@ -1,20 +1,29 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-unused-vars */
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useAddUserMutation } from "../../app/services/userApi/userApi";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
+  const [addUser, { isLoading, data, isSuccess, isError, error }] =
+    useAddUserMutation();
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const handleFormSubmit = (data) => {
-    console.log({ data });
+  const handleFormSubmit = async (data) => {
+    // console.log({ data });
+    addUser(data);
   };
-
+  console.log({ data });
+  if (isError) toast.error(error?.data?.message);
+  if (isSuccess) toast(data?.message);
   return (
     <Card color="transparent" className="flex-col items-center" shadow={false}>
       <Typography variant="h4" color="blue-gray">
@@ -113,7 +122,7 @@ const SignUp = () => {
           )}
         </div>
 
-        <Button type="submit" className="mt-6" fullWidth>
+        <Button disabled={isLoading} type="submit" className="mt-6" fullWidth>
           sign up
         </Button>
         <Typography color="gray" className="mt-4 text-center font-normal">
