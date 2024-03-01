@@ -26,18 +26,18 @@ function NavList() {
         color="blue-gray"
         className="p-1 font-medium"
       >
-        <Link to="/" className="">
-          Pages
+        <Link to="/signup" className="">
+          SIgn Up
         </Link>
-      </Typography>{" "}
+      </Typography>
       <Typography
         as="li"
         variant="small"
         color="blue-gray"
         className="p-1 font-medium"
       >
-        <Link to="/" className="">
-          Pages
+        <Link to="/signin" className="">
+          Sign In
         </Link>
       </Typography>
     </ul>
