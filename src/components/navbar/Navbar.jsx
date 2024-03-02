@@ -7,39 +7,61 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUser } from "../../app/features/auth/authSlice";
 function NavList() {
+  const { user } = useSelector((state) => state.auth.value);
+  const dispatch = useDispatch();
   return (
     <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-medium"
-      >
-        <Link to="/" className="">
-          Pages
-        </Link>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-medium"
-      >
-        <Link to="/signup" className="">
-          SIgn Up
-        </Link>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-medium"
-      >
-        <Link to="/signin" className="">
-          Sign In
-        </Link>
-      </Typography>
+      {user?.email ? (
+        <>
+          <Typography
+            as="li"
+            variant="small"
+            color="blue-gray"
+            className="p-1 font-medium"
+          >
+            <Link to="/task" className="">
+              Task
+            </Link>
+          </Typography>
+          <Typography
+            as="li"
+            variant="small"
+            color="blue-gray"
+            className="p-1 font-medium"
+            onClick={() => {
+              dispatch(removeUser());
+            }}
+          >
+            <span className="">Log Out</span>
+          </Typography>
+        </>
+      ) : (
+        <>
+          <Typography
+            as="li"
+            variant="small"
+            color="blue-gray"
+            className="p-1 font-medium"
+          >
+            <Link to="/signup" className="">
+              SIgn Up
+            </Link>
+          </Typography>
+          <Typography
+            as="li"
+            variant="small"
+            color="blue-gray"
+            className="p-1 font-medium"
+          >
+            <Link to="/signin" className="">
+              Sign In
+            </Link>
+          </Typography>
+        </>
+      )}
     </ul>
   );
 }
@@ -62,7 +84,7 @@ const Navbar = () => {
       <div className="flex items-center justify-between text-blue-gray-900">
         <Link to="/" className="mr-4 cursor-pointer py-1.5">
           <Typography as="span" variant="h6">
-            Excel BD
+            My Task
           </Typography>
         </Link>
 

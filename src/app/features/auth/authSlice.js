@@ -16,17 +16,12 @@ export const authSlice = createSlice({
       state.value.isLoading = false;
     },
     removeUser: (state) => {
+      localStorage.removeItem("auth_token");
       state.value = initialState.value;
     },
-    setIsLoading: (state, value) => {
-      state.value.isLoading = value;
+    setIsLoading: (state, data) => {
+      state.value.isLoading = data.payload;
     },
-    // decrement: (state) => {
-    //   state.value -= 1;
-    // },
-    // incrementByAmount: (state, action) => {
-    //   state.value += action.payload;
-    // },
   },
 });
 

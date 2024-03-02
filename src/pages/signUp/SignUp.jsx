@@ -2,19 +2,19 @@
 /* eslint-disable no-unused-vars */
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAddUserMutation } from "../../app/services/userApi/userApi";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../app/features/auth/authSlice";
+import { setIsLoading, setUser } from "../../app/features/auth/authSlice";
 
 const SignUp = () => {
-  const { user, isLoading: authIsLoading } = useSelector(
-    (state) => state.auth.value
-  );
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/task";
+
   const dispatch = useDispatch();
-  console.log({ user });
   const [addUser, { isLoading, data, isSuccess, isError, error }] =
     useAddUserMutation();
 
@@ -26,6 +26,7 @@ const SignUp = () => {
   } = useForm();
   const handleFormSubmit = async (data) => {
     // console.log({ data });
+    dispatch(setIsLoading(true));
     addUser(data);
   };
   useEffect(() => {
@@ -34,8 +35,8 @@ const SignUp = () => {
       toast(data?.message);
       localStorage.setItem("auth_token", data?.data?.token);
       const { name, email, _id } = data.data._doc;
-
       dispatch(setUser({ name, email, _id }));
+      navigate(from, { replace: true });
     }
   }, [isError, isSuccess]);
 
@@ -114,11 +115,13 @@ const SignUp = () => {
                 value: true,
                 message: "Please enter Password",
               },
-              pattern: {
-                value:
-                  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~|]).{6,8}$/,
-                message:
-                  "Password must contain at least: one digit, one uppercase letter, one special character, and be 6 to 8 characters long.",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters long.",
+              },
+              maxLength: {
+                value: 8,
+                message: "Password must be at most 8 characters long.",
               },
             })}
             aria-invalid={errors.password ? "true" : "false"}
