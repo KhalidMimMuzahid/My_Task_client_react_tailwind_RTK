@@ -6,8 +6,15 @@ import { Link } from "react-router-dom";
 import { useAddUserMutation } from "../../app/services/userApi/userApi";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../app/features/auth/authSlice";
 
 const SignUp = () => {
+  const { user, isLoading: authIsLoading } = useSelector(
+    (state) => state.auth.value
+  );
+  const dispatch = useDispatch();
+  console.log({ user });
   const [addUser, { isLoading, data, isSuccess, isError, error }] =
     useAddUserMutation();
 
@@ -21,9 +28,17 @@ const SignUp = () => {
     // console.log({ data });
     addUser(data);
   };
-  console.log({ data });
-  if (isError) toast.error(error?.data?.message);
-  if (isSuccess) toast(data?.message);
+  useEffect(() => {
+    if (isError) toast.error(error?.data?.message);
+    if (isSuccess) {
+      toast(data?.message);
+      localStorage.setItem("auth_token", data?.data?.token);
+      const { name, email, _id } = data.data._doc;
+
+      dispatch(setUser({ name, email, _id }));
+    }
+  }, [isError, isSuccess]);
+
   return (
     <Card color="transparent" className="flex-col items-center" shadow={false}>
       <Typography variant="h4" color="blue-gray">
